@@ -1,6 +1,7 @@
 name: terraform exploration
 
-on: push
+on: 
+ push:
 
 jobs:
  terraform:
