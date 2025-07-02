@@ -23,6 +23,7 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve -no-color
+      - name: Terraform plan
+        run: terraform plan -auto-approve -no-color
+        #run: terraform plan -auto-approve -no-color
        
