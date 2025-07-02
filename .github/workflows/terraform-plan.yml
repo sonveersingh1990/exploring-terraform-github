@@ -1,4 +1,4 @@
-name: Terraform Apply
+name: Terraform Plan
 
 on:
   workflow_dispatch:
@@ -24,6 +24,6 @@ jobs:
         run: terraform init
 
       - name: Terraform plan
-        run: terraform plan -auto-approve -no-color
+        run: terraform plan 
         #run: terraform plan -auto-approve -no-color
        
