@@ -1,0 +1,4 @@
+name: terraform apply work flow
+on:
+ push: 
+  main
