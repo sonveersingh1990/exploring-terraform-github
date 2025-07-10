@@ -1,21 +1,83 @@
 terraform {
-    required_providers {
-        aws = {
-            source = "hashicorp/aws"
-            version = "~>5.0"
-        }
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~>5.0"
     }
+  }
 }
 
 provider "aws" {
-   region = "ap-south-1"
+  region = "ap-south-1"
 }
 
-resource "aws_instance" "web" {
-  ami           = "demo_ami"
-  instance_type = "t3.micro"
+# VPC
+resource "aws_vpc" "main" {
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
 
   tags = {
-    Name = "HelloWorld"
+    Name = "main-vpc"
+  }
+}
+
+# Subnet
+resource "aws_subnet" "main" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = "ap-south-1a"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "main-subnet"
+  }
+}
+
+# Security Group
+resource "aws_security_group" "web" {
+  name        = "web-sg"
+  description = "Allow SSH and HTTP"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description = "SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "web-sg"
+  }
+}
+
+# EC2 Instances
+resource "aws_instance" "web" {
+  count         = 5
+  ami           = "demo_ami" # Replace with a valid AMI ID
+  instance_type = "t3.micro"
+  subnet_id     = aws_subnet.main.id
+  key_name      = "your_key_pair_name" # Replace with your actual key pair name
+  vpc_security_group_ids = [aws_security_group.web.id]
+
+  tags = {
+    Name = "HelloWorld-${count.index + 1}"
   }
 }
