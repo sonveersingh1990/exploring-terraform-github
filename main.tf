@@ -11,7 +11,9 @@ provider "aws" {
   region = "ap-south-1"
 }
 
-
+module "users" {
+  source = "./iamusers/"
+}
 
 # Security Group
 resource "aws_security_group" "web" {
