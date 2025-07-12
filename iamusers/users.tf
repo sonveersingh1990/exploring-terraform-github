@@ -1,5 +1,5 @@
-resource "aws_iam_user" "github2" {
-  name = github2
+resource "aws_iam_user" "lb" {
+  name = "loadbalancer"
   path = "/system/"
 
   tags = {
@@ -7,11 +7,11 @@ resource "aws_iam_user" "github2" {
   }
 }
 
-resource "aws_iam_access_key" "github2" {
-  user = aws_iam_user.github2.name
+resource "aws_iam_access_key" "lb" {
+  user = aws_iam_user.lb.name
 }
 
-data "aws_iam_policy_document" "github2_ro" {
+data "aws_iam_policy_document" "lb_ro" {
   statement {
     effect    = "Allow"
     actions   = ["ec2:Describe*"]
@@ -19,8 +19,8 @@ data "aws_iam_policy_document" "github2_ro" {
   }
 }
 
-resource "aws_iam_user_policy" "github2_ro" {
+resource "aws_iam_user_policy" "lb_ro" {
   name   = "test"
-  user   = aws_iam_user.github2.name
-  policy = data.aws_iam_policy_document.github2_ro.json
+  user   = aws_iam_user.lb.name
+  policy = data.aws_iam_policy_document.lb_ro.json
 }
