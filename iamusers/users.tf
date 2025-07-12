@@ -21,6 +21,6 @@ data "aws_iam_policy_document" "github2_ro" {
 
 resource "aws_iam_user_policy" "github2_ro" {
   name   = "test"
-  user   = aws_iam_user.lb.name
+  user   = aws_iam_user.github2.name
   policy = data.aws_iam_policy_document.github2_ro.json
 }
